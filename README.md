@@ -74,4 +74,10 @@ MIT
 
 ---
 
-Made with ❤️ by [Vynkor](https://vynkor.fr)
+<div align="center">
+
+**[Voir la page](https://status.vynkor.fr)** • **[Signaler un problème](https://github.com/vynkor/status.vynkor.fr/issues)** • **[Me contacter](mailto:contact@vynkor.fr)**
+
+Made with ❤️ by Vynkor
+
+</div>
