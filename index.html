@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,12 +42,12 @@
 
         .header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             background: linear-gradient(45deg, #8b5cf6, #ec4899);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -56,54 +57,55 @@
         .subtitle {
             color: rgba(255, 255, 255, 0.7);
             font-size: 1.1rem;
-            margin-bottom: 10px;
         }
 
         .last-check {
             color: rgba(255, 255, 255, 0.5);
             font-size: 0.9rem;
+            margin-top: 8px;
         }
 
         .overall-status {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             border: 2px solid rgba(16, 185, 129, 0.3);
-            margin-bottom: 40px;
+            margin-bottom: 35px;
             text-align: center;
             transition: all 0.3s;
         }
 
-        .overall-status.operational {
-            border-color: rgba(16, 185, 129, 0.5);
-            background: rgba(16, 185, 129, 0.05);
-        }
-
-        .overall-status.degraded {
-            border-color: rgba(245, 158, 11, 0.5);
-            background: rgba(245, 158, 11, 0.05);
-        }
-
-        .overall-status.down {
-            border-color: rgba(239, 68, 68, 0.5);
-            background: rgba(239, 68, 68, 0.05);
-        }
-
         .status-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
         }
 
         .status-text {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 5px;
         }
 
         .status-subtext {
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        .global-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .global-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 4px;
+            transition: width 1s ease, background 0.5s, box-shadow 0.5s;
         }
 
         .services-grid {
@@ -118,9 +120,16 @@
             border-radius: 20px;
             padding: 25px;
             border: 1px solid rgba(139, 92, 246, 0.2);
-            transition: all 0.3s;
+            transition: all 0.5s;
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .service-card.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .service-card::before {
@@ -169,44 +178,56 @@
             gap: 10px;
         }
 
-        .service-icon {
-            font-size: 1.5rem;
-        }
-
         .status-badge {
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: all 0.3s;
         }
 
         .status-badge.operational {
             background: rgba(16, 185, 129, 0.2);
             color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: pulseBadge 2s infinite;
         }
 
         .status-badge.checking {
             background: rgba(59, 130, 246, 0.2);
             color: #3b82f6;
             border: 1px solid rgba(59, 130, 246, 0.3);
+            animation: pulseBadge 2s infinite;
         }
 
         .status-badge.degraded {
             background: rgba(245, 158, 11, 0.2);
             color: #f59e0b;
             border: 1px solid rgba(245, 158, 11, 0.3);
+            animation: pulseBadge 2s infinite;
         }
 
         .status-badge.down {
             background: rgba(239, 68, 68, 0.2);
             color: #ef4444;
             border: 1px solid rgba(239, 68, 68, 0.3);
+            animation: pulseBadge 2s infinite;
+        }
+
+        @keyframes pulseBadge {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .status-dot {
@@ -218,8 +239,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.5
+            }
         }
 
         .service-url {
@@ -334,271 +362,293 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        @media (max-width: 768px) {
+        @media(max-width:768px) {
             h1 {
-                font-size: 2rem;
+                font-size: 2rem
             }
+
             .service-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 10px
             }
-            .service-metrics {
-                gap: 15px;
-            }
-            .metric {
-                min-width: 100px;
-            }
+
             .refresh-btn {
-                bottom: 20px;
-                right: 20px;
                 width: 50px;
                 height: 50px;
-                font-size: 1.2rem;
+                font-size: 1.2rem
             }
+        }
+
+        canvas {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <a href="https://vynkor.fr" class="back-link">← Retour à l'accueil</a>
-        
         <div class="header">
             <h1>📊 Status des Services</h1>
-            <p class="subtitle">Surveillance en temps réel de tous les services</p>
+            <p class="subtitle">Surveillance en temps réel</p>
             <p class="last-check">Dernière vérification : <span id="last-check">Chargement...</span></p>
         </div>
 
         <div class="overall-status" id="overall-status">
             <div class="status-icon" id="overall-icon">🔄</div>
             <div class="status-text" id="overall-text">Vérification en cours...</div>
-            <div class="status-subtext">Analyse de tous les services</div>
-        </div>
-
-        <div class="services-grid" id="services">
-            <!-- Services will be inserted here by JavaScript -->
-        </div>
-
-        <div class="incidents-section">
-            <h2 class="incidents-title">Incidents récents</h2>
-            <div class="no-incidents">
-                <div class="no-incidents-icon">✅</div>
-                <div><strong>Aucun incident signalé</strong></div>
-                <div style="margin-top: 8px; font-size: 0.9rem;">Tous les services fonctionnent normalement.</div>
+            <div class="status-subtext" id="overall-subtext">Analyse des services</div>
+            <div class="global-bar">
+                <div class="global-fill" id="global-fill"></div>
             </div>
         </div>
+
+        <div class="services-grid" id="services"></div>
+
+        <canvas id="uptimeChart" width="1000" height="200"></canvas>
+
     </div>
 
     <button class="refresh-btn" onclick="checkAllServices()" title="Actualiser">
         <span id="refresh-icon">🔄</span>
     </button>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // ===== CONFIGURABLE =====
+        const PING_INTERVAL_MS = 30000;  // 30s entre pings
+        const MAX_HISTORY = 20;          // nombre de points affichés
+        // =========================
+
         const services = [
-            {
-                name: 'Site principal',
-                icon: '🏠',
-                url: 'https://vynkor.fr',
-                description: 'Page d\'accueil et hub principal'
-            },
-            {
-                name: 'Portfolio & CV',
-                icon: '👔',
-                url: 'https://cv.vynkor.fr',
-                description: 'CV professionnel et portfolio'
-            },
-            {
-                name: 'Zeta',
-                icon: '🎮',
-                url: 'https://zeta.vynkor.fr',
-                description: 'Jeux et projets créatifs'
-            },
-            {
-                name: 'Convertisseur',
-                icon: '🔧',
-                url: 'https://convertisseur.vynkor.fr',
-                description: 'Outils et utilitaires'
-            }
+            { name: 'Site principal', icon: '🏠', url: 'https://vynkor.fr', color: '#10b981' },
+            { name: 'Portfolio & CV', icon: '👔', url: 'https://cv.vynkor.fr', color: '#3b82f6' },
+            { name: 'Zeta', icon: '🎮', url: 'https://zeta.vynkor.fr', color: '#f59e0b' },
+            { name: 'Convertisseur', icon: '🔧', url: 'https://convertisseur.vynkor.fr', color: '#ef4444' }
         ];
 
         let serviceStatuses = {};
+        let firstRenderDone = false;
+        let pingHistory = {}; // { url: [pings] }
+        let timeLabels = [];
 
+        // load history from localStorage
+        if (localStorage.getItem('pingHistory')) pingHistory = JSON.parse(localStorage.getItem('pingHistory'));
+        if (localStorage.getItem('timeLabels')) timeLabels = JSON.parse(localStorage.getItem('timeLabels'));
+
+        services.forEach(s => { if (!pingHistory[s.url]) pingHistory[s.url] = []; });
+
+        // ===== Fonctions de ping =====
         async function checkService(service) {
-            const startTime = performance.now();
-            
+            const start = performance.now();
             try {
-                // Tenter de charger la page
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
-                
-                const response = await fetch(service.url, { 
-                    method: 'HEAD',
-                    mode: 'no-cors',
-                    cache: 'no-cache',
-                    signal: controller.signal
-                });
-                
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                await fetch(service.url, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache', signal: controller.signal });
                 clearTimeout(timeoutId);
-                
-                const endTime = performance.now();
-                const responseTime = Math.round(endTime - startTime);
-                
-                // Déterminer le statut basé sur le temps de réponse
-                let status = 'operational';
-                let uptime = 99.9;
-                
-                if (responseTime > 5000) {
-                    // Si > 5 secondes, considéré comme dégradé
-                    status = 'degraded';
-                    uptime = 95.0 + Math.random() * 4;
-                } else if (responseTime > 2000) {
-                    // Si > 2 secondes, légèrement dégradé
-                    status = 'degraded';
-                    uptime = 98.0 + Math.random() * 1.5;
-                } else {
-                    // Normal
-                    uptime = 99.5 + Math.random() * 0.5;
-                }
-                
-                return {
-                    status: status,
-                    responseTime: responseTime,
-                    uptime: uptime
-                };
-            } catch (error) {
-                // Si timeout ou erreur réseau
-                if (error.name === 'AbortError') {
-                    return {
-                        status: 'down',
-                        responseTime: 0,
-                        uptime: 0,
-                        error: 'Timeout - pas de réponse après 10s'
-                    };
-                }
-                
-                return {
-                    status: 'down',
-                    responseTime: 0,
-                    uptime: 0,
-                    error: error.message
-                };
+                const end = performance.now();
+                const responseTime = Math.round(end - start);
+                let status = responseTime > 5000 ? 'degraded' : 'operational';
+                let uptime = 99.5 + Math.random() * 0.5; // simulation dispo
+                return { status, responseTime, uptime };
+            } catch {
+                return { status: 'down', responseTime: 0, uptime: 0 };
             }
         }
 
         function getStatusInfo(status) {
-            const statusMap = {
+            return {
                 operational: { text: 'Opérationnel', icon: '✓' },
                 checking: { text: 'Vérification', icon: '🔄' },
                 degraded: { text: 'Dégradé', icon: '⚠' },
                 down: { text: 'Hors ligne', icon: '✕' }
-            };
-            return statusMap[status] || statusMap.checking;
+            }[status] || { text: 'Vérification', icon: '🔄' };
         }
 
-        function renderService(service, serviceStatus) {
-            const statusInfo = getStatusInfo(serviceStatus.status);
-            
-            return `
-                <div class="service-card ${serviceStatus.status}">
-                    <div class="service-header">
-                        <div class="service-name">
-                            <span class="service-icon">${service.icon}</span>
-                            ${service.name}
-                        </div>
-                        <div class="status-badge ${serviceStatus.status}">
-                            <span class="status-dot"></span>
-                            ${statusInfo.icon} ${statusInfo.text}
-                        </div>
-                    </div>
-                    <div class="service-url">
-                        <a href="${service.url}" target="_blank">${service.url.replace('https://', '')}</a>
-                    </div>
-                    <div class="service-metrics">
-                        <div class="metric">
-                            <div class="metric-label">Temps de réponse</div>
-                            <div class="metric-value">${serviceStatus.responseTime || '—'} ms</div>
-                        </div>
-                        <div class="metric">
-                            <div class="metric-label">Disponibilité (30j)</div>
-                            <div class="metric-value">${serviceStatus.uptime?.toFixed(2) || '—'}%</div>
-                            <div class="uptime-bar">
-                                <div class="uptime-fill" style="width: ${serviceStatus.uptime || 0}%"></div>
-                            </div>
-                        </div>
-                    </div>
+        // ===== Render services =====
+        function renderService(service, s) {
+            const info = getStatusInfo(s.status);
+            return `<div class="service-card ${s.status}" data-url="${service.url}">
+            <div class="service-header">
+                <div class="service-name"><span>${service.icon}</span> ${service.name}</div>
+                <div class="status-badge ${s.status}"><span class="status-dot"></span>${info.icon} ${info.text}</div>
+            </div>
+            <div class="service-url"><a href="${service.url}" target="_blank">${service.url.replace('https://', '')}</a></div>
+            <div class="service-metrics">
+                <div class="metric">
+                    <div class="metric-label">Temps de réponse</div>
+                    <div class="metric-value">${s.responseTime || '—'} ms</div>
                 </div>
-            `;
+                <div class="metric">
+                    <div class="metric-label">Disponibilité (30j)</div>
+                    <div class="metric-value">${s.uptime?.toFixed(2) || '—'}%</div>
+                    <div class="uptime-bar"><div class="uptime-fill" style="width:${s.uptime || 0}%"></div></div>
+                </div>
+            </div>
+        </div>`;
         }
 
-        function updateOverallStatus() {
-            const statuses = Object.values(serviceStatuses);
-            const allOperational = statuses.every(s => s.status === 'operational');
-            const anyDown = statuses.some(s => s.status === 'down');
-            const anyDegraded = statuses.some(s => s.status === 'degraded');
-            
-            const overall = document.getElementById('overall-status');
-            const icon = document.getElementById('overall-icon');
-            const text = document.getElementById('overall-text');
-            
-            if (allOperational) {
-                overall.className = 'overall-status operational';
-                icon.textContent = '✅';
-                text.textContent = 'Tous les systèmes opérationnels';
-            } else if (anyDown) {
-                overall.className = 'overall-status down';
-                icon.textContent = '🔴';
-                text.textContent = 'Certains services sont hors ligne';
-            } else if (anyDegraded) {
-                overall.className = 'overall-status degraded';
-                icon.textContent = '⚠️';
-                text.textContent = 'Certains services sont dégradés';
+        function renderServices(updateOnly = false) {
+            const container = document.getElementById('services');
+            if (!updateOnly) {
+                container.innerHTML = services.map(s => renderService(s, serviceStatuses[s.url] || { status: 'checking' })).join('');
+                if (!firstRenderDone) {
+                    document.querySelectorAll('.service-card').forEach((c, i) => setTimeout(() => c.classList.add('show'), i * 100));
+                    firstRenderDone = true;
+                } else document.querySelectorAll('.service-card').forEach(c => c.classList.add('show'));
+            } else {
+                services.forEach(s => {
+                    const card = container.querySelector(`.service-card[data-url="${s.url}"]`);
+                    if (card) {
+                        const sData = serviceStatuses[s.url];
+                        const badge = card.querySelector('.status-badge');
+                        const info = getStatusInfo(sData.status);
+                        badge.innerHTML = `<span class="status-dot"></span>${info.icon} ${info.text}`;
+                        badge.className = `status-badge ${sData.status}`;
+                        const metrics = card.querySelectorAll('.metric-value');
+                        metrics[0].textContent = `${sData.responseTime || '—'} ms`;
+                        metrics[1].textContent = `${sData.uptime?.toFixed(2) || '—'}%`;
+                        card.querySelector('.uptime-fill').style.width = `${sData.uptime || 0}%`;
+                    }
+                });
             }
         }
 
+        // ===== Overall status =====
+        function updateOverallStatus() {
+            const statuses = Object.values(serviceStatuses);
+            if (!statuses.length) return;
+
+            const totalPoints = statuses.reduce((acc, s) => acc + (s.status === 'operational' ? 2 : s.status === 'degraded' ? 1 : 0), 0);
+            const maxPoints = statuses.length * 2;
+            const percent = totalPoints / maxPoints * 100;
+
+            const overall = document.getElementById('overall-status');
+            const icon = document.getElementById('overall-icon');
+            const text = document.getElementById('overall-text');
+            const subtext = document.getElementById('overall-subtext');
+            const fill = document.getElementById('global-fill');
+
+            if (percent >= 66.6) { overall.className = 'overall-status operational'; icon.textContent = '🟢'; text.textContent = 'Systèmes stables'; fill.style.background = 'linear-gradient(90deg,#10b981,#059669)'; }
+            else if (percent >= 33.3) { overall.className = 'overall-status degraded'; icon.textContent = '🟠'; text.textContent = 'Performance dégradée'; fill.style.background = 'linear-gradient(90deg,#f59e0b,#d97706)'; }
+            else { overall.className = 'overall-status down'; icon.textContent = '🔴'; text.textContent = 'Problèmes majeurs'; fill.style.background = 'linear-gradient(90deg,#ef4444,#b91c1c)'; }
+
+            fill.style.width = '0';
+            setTimeout(() => { fill.style.width = `${percent}%` }, 50);
+            subtext.textContent = `${percent.toFixed(1)}% de disponibilité globale`;
+        }
+
+        // ===== Chart.js =====
+        const ctx = document.getElementById('uptimeChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: services.map(s => ({
+                    label: s.name,
+                    data: pingHistory[s.url],
+                    fill: false,
+                    borderColor: s.color,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    borderWidth: 2
+                })).concat([{
+                    label: 'Moyenne',
+                    data: Array(MAX_HISTORY).fill(null),
+                    borderColor: '#ffffff',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.3
+                }])
+            },
+            options: {
+                responsive: true,
+                animation: { duration: 500 },
+                scales: {
+                    y: { title: { display: true, text: 'Ping (ms)' } },
+                    x: { title: { display: true, text: 'Heure' } }
+                },
+                plugins: {
+                    legend: { display: true },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const service = services[context.datasetIndex];
+                                if (!service) return context.formattedValue + ' ms';
+                                const status = serviceStatuses[service.url]?.status || 'checking';
+                                return `${service.name}: ${context.formattedValue} ms (${status})`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        function updateChart() {
+            chart.data.labels = timeLabels;
+            services.forEach((s, i) => {
+                chart.data.datasets[i].data = pingHistory[s.url];
+            });
+
+            // calcul moyenne
+            const moyenne = [];
+            for (let i = 0; i < timeLabels.length; i++) {
+                let sum = 0, count = 0;
+                services.forEach(s => { const val = pingHistory[s.url][i]; if (val != null) { sum += val; count++; } });
+                moyenne.push(count ? Math.round(sum / count) : null);
+            }
+            chart.data.datasets[services.length].data = moyenne;
+
+            chart.update();
+        }
+
+        // ===== Check all services =====
         async function checkAllServices() {
-            const refreshIcon = document.getElementById('refresh-icon');
-            refreshIcon.classList.add('spinner');
-            
-            // Reset statuses to checking
-            services.forEach(service => {
-                serviceStatuses[service.url] = { status: 'checking', responseTime: null, uptime: null };
-            });
-            
+            document.getElementById('refresh-icon').classList.add('spinner');
+
+            services.forEach(s => serviceStatuses[s.url] = { status: 'checking', responseTime: null, uptime: null });
             renderServices();
-            
-            // Check all services
-            const checks = services.map(async service => {
-                const status = await checkService(service);
-                serviceStatuses[service.url] = status;
-                renderServices();
-                updateOverallStatus();
-            });
-            
-            await Promise.all(checks);
-            
-            // Update last check time
-            const now = new Date();
-            document.getElementById('last-check').textContent = now.toLocaleTimeString('fr-FR');
-            
-            refreshIcon.classList.remove('spinner');
+
+            await Promise.all(services.map(async s => {
+                const res = await checkService(s);
+                serviceStatuses[s.url] = res;
+
+                pingHistory[s.url].push(res.responseTime);
+                if (pingHistory[s.url].length > MAX_HISTORY) pingHistory[s.url].shift();
+            }));
+
+            timeLabels.push(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
+            if (timeLabels.length > MAX_HISTORY) timeLabels.shift();
+
+            renderServices(true);
+            updateOverallStatus();
+            updateChart();
+
+            // sauvegarde localStorage
+            localStorage.setItem('pingHistory', JSON.stringify(pingHistory));
+            localStorage.setItem('timeLabels', JSON.stringify(timeLabels));
+
+            document.getElementById('last-check').textContent = new Date().toLocaleTimeString();
+            document.getElementById('refresh-icon').classList.remove('spinner');
         }
 
-        function renderServices() {
-            const servicesContainer = document.getElementById('services');
-            servicesContainer.innerHTML = services.map(service => 
-                renderService(service, serviceStatuses[service.url] || { status: 'checking' })
-            ).join('');
-        }
-
-        // Initial check on page load
+        // ===== Initial load =====
         checkAllServices();
-
-        // Auto-refresh every 2 minutes
-        setInterval(checkAllServices, 120000);
+        setInterval(checkAllServices, PING_INTERVAL_MS);
     </script>
 </body>
+
 </html>
