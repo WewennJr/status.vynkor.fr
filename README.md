@@ -47,6 +47,8 @@ const services = [
     }
     // Ajoutez autant de services que vous voulez
 ];
+
+const servicesWithMaintenanceCheck = ['https://zeta.vynkor.fr']; // Ajouter les url de site pour vérifier si le site est en maintenance ou non (https://votresite.com/status/maintenance => {'maintenance': bool})
 ```
 
 ### 3. Personnaliser (optionnel)
