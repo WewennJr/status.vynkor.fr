@@ -48,7 +48,8 @@ const services = [
     // Ajoutez autant de services que vous voulez
 ];
 
-const servicesWithMaintenanceCheck = ['https://zeta.vynkor.fr']; // Ajouter les url de site pour vérifier si le site est en maintenance ou non (https://votresite.com/status/maintenance => {'maintenance': bool})
+const servicesWithMaintenanceCheck = ['https://zeta.vynkor.fr'];
+// Ajouter les url de site pour vérifier si le site est en maintenance ou non (https://votresite.com/status/maintenance => {'maintenance': bool})
 ```
 
 ### 3. Personnaliser (optionnel)
@@ -81,5 +82,6 @@ MIT
 **[Voir la page](https://status.vynkor.fr)** • **[Signaler un problème](https://github.com/vynkor/status.vynkor.fr/issues)** • **[Me contacter](mailto:contact@vynkor.fr)**
 
 Made with ❤️ by Vynkor
+
 
 </div>
