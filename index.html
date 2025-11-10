@@ -439,6 +439,8 @@
             { name: 'Convertisseur', icon: '🔧', url: 'https://convertisseur.vynkor.fr', color: '#ef4444' }
         ];
 
+        const servicesWithMaintenanceCheck = ['https://zeta.vynkor.fr'];
+
         let serviceStatuses = {};
         let firstRenderDone = false;
         let pingHistory = {}; // { url: [pings] }
@@ -453,19 +455,40 @@
         // ===== Fonctions de ping =====
         async function checkService(service) {
             const start = performance.now();
+            let status = 'down';
+            let responseTime = 0;
+            let uptime = 0;
+
+            // ping classique
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
                 await fetch(service.url, { method: 'HEAD', mode: 'no-cors', cache: 'no-cache', signal: controller.signal });
                 clearTimeout(timeoutId);
                 const end = performance.now();
-                const responseTime = Math.round(end - start);
-                let status = responseTime > 5000 ? 'degraded' : 'operational';
-                let uptime = 99.5 + Math.random() * 0.5; // simulation dispo
-                return { status, responseTime, uptime };
+                responseTime = Math.round(end - start);
+                status = responseTime > 5000 ? 'degraded' : 'operational';
+                uptime = 99.5 + Math.random() * 0.5; // simulation dispo
             } catch {
-                return { status: 'down', responseTime: 0, uptime: 0 };
+                status = 'down';
+                responseTime = 0;
+                uptime = 0;
             }
+
+            // check maintenance si le service est dans la liste et est en ligne
+            if (servicesWithMaintenanceCheck.includes(service.url) && status !== 'down') {
+                try {
+                    const res = await fetch(`${service.url}/status/maintenance`);
+                    const data = await res.json(); // { maintenance: true/false }
+                    if (data.maintenance) {
+                        status = 'maintenance';
+                    }
+                } catch {
+                    // ignore errors, garder le statut normal
+                }
+            }
+
+            return { status, responseTime, uptime };
         }
 
         function getStatusInfo(status) {
@@ -473,7 +496,8 @@
                 operational: { text: 'Opérationnel', icon: '✓' },
                 checking: { text: 'Vérification', icon: '🔄' },
                 degraded: { text: 'Dégradé', icon: '⚠' },
-                down: { text: 'Hors ligne', icon: '✕' }
+                down: { text: 'Hors ligne', icon: '✕' },
+                maintenance: { text: 'Maintenance', icon: '🛠️' }
             }[status] || { text: 'Vérification', icon: '🔄' };
         }
 
@@ -531,7 +555,11 @@
             const statuses = Object.values(serviceStatuses);
             if (!statuses.length) return;
 
-            const totalPoints = statuses.reduce((acc, s) => acc + (s.status === 'operational' ? 2 : s.status === 'degraded' ? 1 : 0), 0);
+            const totalPoints = statuses.reduce((acc, s) => {
+                if (s.status === 'operational') return acc + 2;
+                if (s.status === 'degraded' || s.status === 'maintenance') return acc + 1;
+                return acc; // down ou autres statuts => 0
+            }, 0);
             const maxPoints = statuses.length * 2;
             const percent = totalPoints / maxPoints * 100;
 
