@@ -135,10 +135,15 @@ function renderServices(updateOnly = false) {
             const card = container.querySelector(`.service-card[data-url="${s.url}"]`);
             if (card) {
                 const sData = serviceStatuses[s.url];
-                const badge = card.querySelector('.status-badge');
                 const info = getStatusInfo(sData.status);
+                
+                // Mettre à jour la classe de la card
+                card.className = `service-card ${sData.status} show`;
+                
+                const badge = card.querySelector('.status-badge');
                 badge.innerHTML = `<span class="status-dot"></span>${info.icon} ${info.text}`;
                 badge.className = `status-badge ${sData.status}`;
+                
                 const metrics = card.querySelectorAll('.metric-value');
                 metrics[0].textContent = `${sData.responseTime || '—'} ms`;
                 metrics[1].textContent = `${sData.uptime?.toFixed(2) || '—'}%`;
@@ -146,6 +151,26 @@ function renderServices(updateOnly = false) {
             }
         });
     }
+}
+
+// ===== MISE À JOUR D'UN SERVICE INDIVIDUEL =====
+function updateSingleService(service, serviceData) {
+    const card = document.querySelector(`.service-card[data-url="${service.url}"]`);
+    if (!card) return;
+    
+    const info = getStatusInfo(serviceData.status);
+    
+    // Mettre à jour la classe de la card
+    card.className = `service-card ${serviceData.status} show`;
+    
+    const badge = card.querySelector('.status-badge');
+    badge.innerHTML = `<span class="status-dot"></span>${info.icon} ${info.text}`;
+    badge.className = `status-badge ${serviceData.status}`;
+    
+    const metrics = card.querySelectorAll('.metric-value');
+    metrics[0].textContent = `${serviceData.responseTime || '—'} ms`;
+    metrics[1].textContent = `${serviceData.uptime?.toFixed(2) || '—'}%`;
+    card.querySelector('.uptime-fill').style.width = `${serviceData.uptime || 0}%`;
 }
 
 // ===== OVERALL STATUS =====
@@ -218,13 +243,26 @@ function initChart() {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: window.innerWidth < 768 ? 1.5 : 5,
             animation: { duration: 500 },
             scales: {
-                y: { title: { display: true, text: 'Ping (ms)' } },
-                x: { title: { display: true, text: 'Heure' } }
+                y: { 
+                    title: { display: true, text: 'Ping (ms)' },
+                    ticks: { color: 'rgba(255,255,255,0.7)' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                x: { 
+                    title: { display: true, text: 'Heure' },
+                    ticks: { color: 'rgba(255,255,255,0.7)' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
             },
             plugins: {
-                legend: { display: true },
+                legend: { 
+                    display: true,
+                    labels: { color: 'rgba(255,255,255,0.8)' }
+                },
                 tooltip: {
                     callbacks: {
                         label: function (context) {
@@ -236,6 +274,14 @@ function initChart() {
                     }
                 }
             }
+        }
+    });
+    
+    // Adapter le graphique au resize
+    window.addEventListener('resize', () => {
+        if (chart) {
+            chart.options.aspectRatio = window.innerWidth < 768 ? 1.5 : 5;
+            chart.resize();
         }
     });
 }
@@ -263,34 +309,48 @@ function updateChart() {
     chart.update();
 }
 
-// ===== CHECK ALL SERVICES =====
+// ===== CHECK ALL SERVICES (VERSION PROGRESSIVE) =====
 async function checkAllServices() {
-    document.getElementById('refresh-icon').classList.add('spinner');
+    const refreshIcon = document.getElementById('refresh-icon');
+    refreshIcon.classList.add('spinner');
 
-    services.forEach(s => serviceStatuses[s.url] = { status: 'checking', responseTime: null, uptime: null });
+    // Initialiser tous les services en "checking"
+    services.forEach(s => {
+        serviceStatuses[s.url] = { status: 'checking', responseTime: null, uptime: null };
+    });
     renderServices();
 
-    await Promise.all(services.map(async s => {
-        const res = await checkService(s);
-        serviceStatuses[s.url] = res;
+    // Vérifier chaque service un par un et afficher immédiatement
+    for (const service of services) {
+        const res = await checkService(service);
+        serviceStatuses[service.url] = res;
+        
+        // Mettre à jour immédiatement ce service
+        updateSingleService(service, res);
+        
+        // Mettre à jour le statut global après chaque service
+        updateOverallStatus();
+        
+        // Ajouter au ping history
+        pingHistory[service.url].push(res.responseTime);
+        if (pingHistory[service.url].length > MAX_HISTORY) {
+            pingHistory[service.url].shift();
+        }
+    }
 
-        pingHistory[s.url].push(res.responseTime);
-        if (pingHistory[s.url].length > MAX_HISTORY) pingHistory[s.url].shift();
-    }));
-
+    // Ajouter le label de temps
     timeLabels.push(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
     if (timeLabels.length > MAX_HISTORY) timeLabels.shift();
 
-    renderServices(true);
-    updateOverallStatus();
+    // Mettre à jour le graphique
     updateChart();
 
     // Sauvegarde localStorage
     localStorage.setItem('pingHistory', JSON.stringify(pingHistory));
     localStorage.setItem('timeLabels', JSON.stringify(timeLabels));
 
-    document.getElementById('last-check').textContent = new Date().toLocaleTimeString();
-    document.getElementById('refresh-icon').classList.remove('spinner');
+    document.getElementById('last-check').textContent = new Date().toLocaleTimeString('fr-FR');
+    refreshIcon.classList.remove('spinner');
 }
 
 // ===== INITIALISATION =====

@@ -19,7 +19,6 @@
 
 - 🏠 [vynkor.fr](https://vynkor.fr) - Site principal
 - 👔 [cv.vynkor.fr](https://cv.vynkor.fr) - Portfolio & CV
-- 🍽️ [resto.vynkor.fr](https://resto.vynkor.fr) - Site restaurant CTP1 R1.02
 - 🎮 [zeta.vynkor.fr](https://zeta.vynkor.fr) - Jeux et projets
 - 🔧 [convertisseur.vynkor.fr](https://convertisseur.vynkor.fr) - Outils
 
@@ -81,6 +80,15 @@ Dans `services.json`, section `config` :
 }
 ```
 
+### 4. Mode maintenance
+
+Si `checkMaintenance: true`, le service vérifiera automatiquement `/status/maintenance`.
+
+Votre endpoint doit répondre :
+```json
+{ "maintenance": true }
+```
+
 ### 5. Personnaliser le style (optionnel)
 
 Dans `assets/style.css`, modifiez les couleurs principales :
@@ -112,10 +120,10 @@ Uploadez tous les fichiers sur votre hébergeur :
 ```
 status.vynkor.fr/
 ├── index.html              # Page principale
+├── services.json           # Configuration des services
 ├── assets/
 │   ├── style.css          # Styles
 │   └── script.js          # Logique et Chart.js
-├── services.json          # Fichier de configuration
 └── README.md              # Ce fichier
 ```
 
@@ -152,10 +160,30 @@ status.vynkor.fr/
 Dans `assets/script.js`, fonction `checkService()` :
 
 ```javascript
-// Ligne ~38
+// Ligne ~52
 if (responseTime > 5000) {
     status = 'degraded';  // Modifier ce seuil (actuellement 5s)
 }
+```
+
+### Ajouter un service via script
+
+Vous pouvez modifier `services.json` automatiquement via script :
+
+```javascript
+// Exemple Node.js
+const fs = require('fs');
+const config = JSON.parse(fs.readFileSync('services.json'));
+
+config.services.push({
+    name: "Nouveau service",
+    icon: "🆕",
+    url: "https://nouveau.com",
+    color: "#8b5cf6",
+    checkMaintenance: false
+});
+
+fs.writeFileSync('services.json', JSON.stringify(config, null, 2));
 ```
 
 ### Désactiver l'historique localStorage
