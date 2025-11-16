@@ -3,41 +3,70 @@
 		"pingIntervalMs": 30000,
 		"maxHistoryPoints": 20
 	},
-	"services": [
+	"serviceGroups": [
 		{
-			"name": "Site principal",
-			"icon": "🏠",
-			"url": "https://vynkor.fr",
-			"color": "#10b981",
-			"checkMaintenance": false
+			"name": "🌐 Principal",
+			"services": [
+				{
+					"name": "Site principal",
+					"icon": "🏠",
+					"url": "https://vynkor.fr",
+					"color": "#10b981",
+					"checkMaintenance": false
+				}
+			]
 		},
 		{
-			"name": "Portfolio & CV",
-			"icon": "👔",
-			"url": "https://cv.vynkor.fr",
-			"color": "#3b82f6",
-			"checkMaintenance": false
+			"name": "💼 Professionnel",
+			"services": [
+				{
+					"name": "Portfolio & CV",
+					"icon": "👔",
+					"url": "https://cv.vynkor.fr",
+					"color": "#3b82f6",
+					"checkMaintenance": false
+				},
+				{
+					"name": "Restaurant (CTP1 R1.02)",
+					"icon": "🍽️",
+					"url": "https://resto.vynkor.fr",
+					"color": "#8b5cf6",
+					"checkMaintenance": false
+				}
+			]
 		},
 		{
-			"name": "Restaurant (CTP1 R1.02)",
-			"icon": "🍽️",
-			"url": "https://resto.vynkor.fr",
-			"color": "#8b5cf6",
-			"checkMaintenance": false
+			"name": "🎮 Gaming",
+			"services": [
+				{
+					"name": "Jeu RPG",
+					"icon": "🎮",
+					"url": "https://rpg.vynkor.fr",
+					"color": "#f97316",
+					"checkMaintenance": true,
+					"isNew": true,
+					"newUntil": "2025-01-15"
+				},
+				{
+					"name": "Zeta",
+					"icon": "🎮",
+					"url": "https://zeta.vynkor.fr",
+					"color": "#f59e0b",
+					"checkMaintenance": true
+				}
+			]
 		},
 		{
-			"name": "Zeta",
-			"icon": "🎮",
-			"url": "https://zeta.vynkor.fr",
-			"color": "#f59e0b",
-			"checkMaintenance": true
-		},
-		{
-			"name": "Convertisseur",
-			"icon": "🔧",
-			"url": "https://convertisseur.vynkor.fr",
-			"color": "#ef4444",
-			"checkMaintenance": false
+			"name": "🔧 Outils",
+			"services": [
+				{
+					"name": "Convertisseur",
+					"icon": "🔧",
+					"url": "https://convertisseur.vynkor.fr",
+					"color": "#ef4444",
+					"checkMaintenance": false
+				}
+			]
 		}
 	]
 }

@@ -18,7 +18,9 @@
 ## 🎯 Services surveillés
 
 - 🏠 [vynkor.fr](https://vynkor.fr) - Site principal
+- 🎮 [rpg.vynkor.fr](https://rpg.vynkor.fr) - Jeu RPG
 - 👔 [cv.vynkor.fr](https://cv.vynkor.fr) - Portfolio & CV
+- 🍽️ [resto.vynkor.fr](https://resto.vynkor.fr) - Restaurant (CTP1 R1.02)
 - 🎮 [zeta.vynkor.fr](https://zeta.vynkor.fr) - Jeux et projets
 - 🔧 [convertisseur.vynkor.fr](https://convertisseur.vynkor.fr) - Outils
 

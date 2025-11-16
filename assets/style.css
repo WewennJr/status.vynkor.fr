@@ -106,6 +106,28 @@ h1 {
     margin-bottom: 40px;
 }
 
+/* ===== NOUVEAUX STYLES POUR LES GROUPES ===== */
+.service-group {
+    margin-bottom: 40px;
+}
+
+.group-header {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.group-services {
+    display: grid;
+    gap: 20px;
+}
+
 .service-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
@@ -168,6 +190,36 @@ h1 {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ===== BADGE NEW ===== */
+.badge-new {
+    display: inline-block;
+    background: linear-gradient(45deg, #f97316, #ea580c);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: pulse-new 2s infinite;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+}
+
+@keyframes pulse-new {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(249, 115, 22, 0.8);
+    }
 }
 
 .status-badge {
@@ -363,6 +415,12 @@ h1 {
     }
 }
 
+canvas {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    margin-top: 20px;
+}
+
 @media(max-width:768px) {
     h1 {
         font-size: 2rem
@@ -379,10 +437,8 @@ h1 {
         height: 50px;
         font-size: 1.2rem
     }
-}
 
-canvas {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    margin-top: 20px;
+    .group-header {
+        font-size: 1.1rem;
+    }
 }
