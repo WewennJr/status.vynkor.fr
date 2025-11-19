@@ -9,6 +9,11 @@ let firstRenderDone = false;
 let pingHistory = {};
 let timeLabels = [];
 
+// ===== CONFIGURATION API =====
+const API_URL = 'https://status-api.vynkor.com';
+let useBackend = true;
+
+
 // Charger l'historique depuis localStorage
 if (localStorage.getItem('pingHistory')) pingHistory = JSON.parse(localStorage.getItem('pingHistory'));
 if (localStorage.getItem('timeLabels')) timeLabels = JSON.parse(localStorage.getItem('timeLabels'));
@@ -48,16 +53,6 @@ async function loadConfig() {
         alert('Impossible de charger la configuration des services. Vérifiez que services.json est accessible.');
         return false;
     }
-}
-
-// ===== VÉRIFIER SI BADGE NEW DOIT ÊTRE AFFICHÉ =====
-function shouldShowNewBadge(service) {
-    if (!service.isNew) return false;
-    if (!service.newUntil) return true; // Si pas de date limite, toujours afficher
-    
-    const now = new Date();
-    const until = new Date(service.newUntil);
-    return now <= until;
 }
 
 // ===== FONCTIONS DE PING =====
@@ -102,6 +97,25 @@ async function checkService(service) {
     }
 
     return { status, responseTime, uptime };
+}
+
+async function fetchFromBackend() {
+    try {
+        const response = await fetch(`${API_URL}/api/status`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) throw new Error('Backend unavailable');
+        
+        const data = await response.json();
+        console.log('✅ Données backend récupérées');
+        return data;
+    } catch (error) {
+        console.warn('⚠️ Backend indisponible, fallback sur pings client-side');
+        useBackend = false;
+        return null;
+    }
 }
 
 function getStatusInfo(status) {
@@ -360,53 +374,65 @@ async function checkAllServices() {
     const refreshIcon = document.getElementById('refresh-icon');
     refreshIcon.classList.add('spinner');
 
-    // Initialiser tous les services en "checking"
+    // Essayer d'abord le backend
+    if (useBackend) {
+        const backendData = await fetchFromBackend();
+        
+        if (backendData) {
+            // Utiliser les données du backend
+            Object.keys(backendData.services).forEach(url => {
+                const serviceData = backendData.services[url];
+                serviceStatuses[url] = serviceData;
+                
+                // Trouver le service correspondant
+                const service = services.find(s => s.url === url);
+                if (service) {
+                    updateSingleService(service, serviceData);
+                }
+            });
+            
+            // Mettre à jour l'historique
+            pingHistory = backendData.history;
+            timeLabels = backendData.timeLabels;
+            
+            updateOverallStatus();
+            updateChart();
+            
+            document.getElementById('last-check').textContent = 
+                new Date(backendData.lastUpdate).toLocaleTimeString('fr-FR');
+            
+            refreshIcon.classList.remove('spinner');
+            return;
+        }
+    }
+
+    // Fallback : Pings client-side (code existant)
     services.forEach(s => {
         serviceStatuses[s.url] = { status: 'checking', responseTime: null, uptime: null };
     });
     renderServices();
 
-    // Vérifier chaque service un par un et afficher immédiatement
     for (const service of services) {
         const res = await checkService(service);
         serviceStatuses[service.url] = res;
-        
-        // Mettre à jour immédiatement ce service
         updateSingleService(service, res);
-        
-        // Mettre à jour le statut global après chaque service
         updateOverallStatus();
         
-        // Ajouter au ping history
         pingHistory[service.url].push(res.responseTime);
         if (pingHistory[service.url].length > MAX_HISTORY) {
             pingHistory[service.url].shift();
         }
     }
 
-    // Ajouter le label de temps
     timeLabels.push(new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }));
     if (timeLabels.length > MAX_HISTORY) timeLabels.shift();
 
-    // Mettre à jour le graphique
     updateChart();
-
-    // Sauvegarde localStorage
     localStorage.setItem('pingHistory', JSON.stringify(pingHistory));
     localStorage.setItem('timeLabels', JSON.stringify(timeLabels));
 
     document.getElementById('last-check').textContent = new Date().toLocaleTimeString('fr-FR');
     refreshIcon.classList.remove('spinner');
-}
-
-// ===== INITIALISATION =====
-async function init() {
-    const configLoaded = await loadConfig();
-    if (!configLoaded) return;
-    
-    initChart();
-    await checkAllServices();
-    setInterval(checkAllServices, PING_INTERVAL_MS);
 }
 
 // Démarrer l'application

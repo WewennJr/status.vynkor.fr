@@ -13,30 +13,25 @@
 					"url": "https://vynkor.fr",
 					"color": "#10b981",
 					"checkMaintenance": false
-				}
-			]
-		},
-		{
-			"name": "💼 Professionnel",
-			"services": [
+				},
 				{
-					"name": "Portfolio & CV",
-					"icon": "👔",
-					"url": "https://cv.vynkor.fr",
-					"color": "#3b82f6",
+					"name": "Vynkor AUTH",
+					"icon": "🏠",
+					"url": "https://auth.vynkor.fr",
+					"color": "#06b6d4",
 					"checkMaintenance": false
 				},
 				{
-					"name": "Restaurant (CTP1 R1.02)",
-					"icon": "🍽️",
-					"url": "https://resto.vynkor.fr",
-					"color": "#8b5cf6",
+					"name": "Vynkor Discord Bot",
+					"icon": "🏠",
+					"url": "https://bot.vynkor.fr",
+					"color": "#3b82f6",
 					"checkMaintenance": false
 				}
 			]
 		},
 		{
-			"name": "🎮 Gaming",
+			"name": "🎮 Game",
 			"services": [
 				{
 					"name": "Jeu RPG",
@@ -44,8 +39,7 @@
 					"url": "https://rpg.vynkor.fr",
 					"color": "#f97316",
 					"checkMaintenance": true,
-					"isNew": true,
-					"newUntil": "2025-01-15"
+					"isNew": true
 				},
 				{
 					"name": "Zeta",
